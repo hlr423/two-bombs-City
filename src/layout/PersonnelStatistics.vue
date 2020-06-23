@@ -30,7 +30,7 @@
                       @on-change="getEndTime"
                       style="width: 200px"></DatePicker>
          <span style="margin: 0 15px;font-weight: bolder"> 团体名称:</span><Input v-model="teamName" placeholder="请输入团体名称" style="width: 200px" />
-          <Button type="primary" @click="getStatisticData">统计</Button>
+          <Button type="primary" @click="getStatisticData">查询</Button>
           <Button type="info" @click="exportStatisticData">导出</Button>
         </Col>
       </Row>
@@ -50,58 +50,21 @@
     data(){
       return {
         countData:{totalNum:20,monthNum:10,todayNum:50},
-        data:[
-          {
-            "id": 1,
-            "date": "2020-06-20",
-            "startTime": "21:56:03",
-            "endTime": "13:25:09",
-            "inDoorPassCount": 1,
-            "outDoorPassCount": 0,
-            "teamName": "成都七中",
-            "remark": ""
-          },
-          {
-            "id": 2,
-            "date": "2020-06-20",
-            "startTime": "21:56:07",
-            "endTime": "14:27:31",
-            "inDoorPassCount": 20,
-            "outDoorPassCount": 0,
-            "teamName": "四川大学",
-            "remark": ""
-          },
-          {
-            "id": 3,
-            "date": "2020-06-20",
-            "startTime": "21:56:12",
-            "endTime": "15:56:57",
-            "inDoorPassCount": 5,
-            "outDoorPassCount": 0,
-            "teamName": "成都市政府",
-            "remark": ""
-          }
-        ],
+        data:[],
         columns:[
           {
-            title: '编号',
+            title: '序号',
             key: 'id',
             align: 'center'
           },
           {
-            title: '名称',
+            title: '团体',
             key: 'teamName',
             align: 'center'
           },
-
           {
-            title: '门内通行证计数',
-            key: 'inDoorPassCount',
-            align: 'center',
-          },
-          {
-            title: '外内通行证计数',
-            key: 'outDoorPassCount',
+            title: '时间',
+            key: 'date',
             align: 'center'
           },
           {
@@ -115,13 +78,14 @@
             align: 'center'
           },
           {
-            title: '评论',
+            title: '通过人数',
+            key: 'inDoorPassCount',
+            align: 'center',
+          },
+          {
+            title: '备注',
             key: 'remark',
             align: 'center',
-            // render:(h, params) => {
-            //   return  h("p",{
-            //   },params.row.online?'在线':'下线');
-            // }
           },
         ],
         spinShow: false,
@@ -143,20 +107,24 @@
     methods:{
       initData(){
         let v=this;
-        v.$http.get('/api/user/statics-info',{params:{
+        // let params = new  FormData()
+        // params.append( 'startTime',v.startTime,)
+        // params.append( 'endTime',v.endTime,)
+        // params.append( 'teamName',v.teamName,)
+        // params.append( 'page',v.page,)
+        // params.append( 'size',v.size,)
+        v.$http.post('/api/user/statics-info',{params:{
             startTime:v.startTime,
             endTime:v.endTime,
             teamName:v.teamName,
             page:v.pageNumber,
             size:v.pageSize,
-
-          }})
-          .then((res)=> {
+          }}).then((res)=> {
             if (res.body.code== '200') {
               v.data=res.body.data.content;
               v.totalCount=res.body.data.totalElements
             } else {
-              v.$Message.error(res.body.desc,1);
+              v.$Message.error(res.body.info,1);
             }
             v.spinShow=false;
           })
@@ -172,7 +140,7 @@
             if (res.body.code== '200') {
               v.countData=res.body.data;
             } else {
-              v.$Message.error(res.body.desc,1);
+              v.$Message.error(res.body.info,1);
             }
             v.spinShow=false;
           })
@@ -196,7 +164,11 @@
         this.initData();
       },
       exportStatisticData(){
-        this.$Message.info('导出统计数据')
+        let v=this;
+        window.location.href = `/api/user/export?startTime=${v.startTime}&endTime=${v.endTime}&teamName=${v.teamName}&page=${v.pageNumber}&size=${v.pageSize}`
+
+        v.$Message.success('导出统计数据成功')
+
       }
     }
   }

@@ -12,7 +12,7 @@
       :router="true">
       <el-menu-item index="/">两弹城人员统计</el-menu-item>
     </el-menu>
-    <div  style="margin-top: 20px">
+    <div  style="margin-top: 20px;margin-right: 30px">
     <a-tabs tabPosition="left" @change="changeTabs" :defaultActiveKey="activeKey">
       <a-tab-pane :key="item.id" :tab="item.label" v-for="item in tabs">
 
@@ -29,8 +29,8 @@
     data() {
       return {
         tabs:[
-          {label:'人员计数',id:'1'},
-          {label:'人员统计',id:'2'}
+          {label:'人员统计',id:'1'},
+          {label:'人员计数',id:'2'}
         ],
         activeIndex: '/',
         activeKey:'1',
@@ -47,6 +47,9 @@
           this.$router.push({path:'/PersonnelCount'})
         }
       },
+    },
+    created() {
+      this.$router.push({path:'/'})
     }
   }
 </script>

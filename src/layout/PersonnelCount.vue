@@ -32,7 +32,7 @@
       },
       methods:{
         startStatistics(){
-          this.CountData('')
+          this.CountData('');
           this.flag=true;
         } ,
         endStatistics(){
@@ -46,7 +46,7 @@
             teamName:v.countData.teamName,
             id:id?id:''
           };
-          v.$http.get('/api/user/num',{params:paramData})
+          v.$http.post('/api/user/num',{params:paramData})
             .then((res)=> {
               if(id){
                 if (res.body.code== '200') {
