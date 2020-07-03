@@ -1,27 +1,31 @@
 import Vue from 'vue'
-import Router from 'vue-router'
+import VueRouter from 'vue-router'
+Vue.use(VueRouter);
 
-Vue.use(Router);
-
-export default new Router({
-  routes: [
+  const routes = [
     {
       path: '/',
       name: 'index',
-      component: resolve => require(['@/layout/index.vue'], resolve),
+      component: () => import('@/layout/index.vue'),
       children:[
         {
           path: '/',
           name: '人员统计',
-          component: resolve => require(['@/layout/PersonnelStatistics.vue'], resolve)
+          component: () => import('@/layout/PersonnelStatistics.vue')
         },
         {
           path: '/PersonnelCount',
           name: '人员计数',
-          component: resolve => require(['@/layout/PersonnelCount.vue'], resolve)
+          component: () => import('@/layout/PersonnelCount.vue')
         },
       ]
     },
+];
 
-  ]
+const router = new VueRouter({
+  mode: 'history',
+  base: process.env.BASE_URL,
+  routes
 })
+
+export default router

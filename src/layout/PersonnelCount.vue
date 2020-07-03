@@ -41,6 +41,10 @@
         },
         CountData(id){
           let v=this;
+          // let params=new FormData()
+          // params.append('remark',v.countData.remarks);
+          // params.append('teamName',v.countData.teamName);
+          // params.append('id',id?id:'');
           let paramData={
             remark:v.countData.remarks,
             teamName:v.countData.teamName,
@@ -48,24 +52,27 @@
           };
           v.$http.post('/api/user/num',{params:paramData})
             .then((res)=> {
+              console.log(res)
               if(id){
                 if (res.body.code== '200') {
                   v.data=res.body.data;
                 } else {
-                  v.$Message.error(res.body.info,1);
+                  v.flag=false;
+                  v.$Message.error(res.body.info,3);
                 }
               }else {
                 if (res.body.code== '200') {
                   v.$Message.success('结束统计',2);
                 } else {
+                  v.flag=false;
                   v.$Message.error(res.body.info,1);
                 }
               }
-
               v.spinShow=false;
             })
             .catch((err)=> {
-              v.$Message.error("操作失败！",1);
+              v.flag=false;
+              v.$Message.error("无法连接到设备！",2);
               v.spinShow=false;
             });
         },

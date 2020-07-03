@@ -30,8 +30,8 @@
                       @on-change="getEndTime"
                       style="width: 200px"></DatePicker>
          <span style="margin: 0 15px;font-weight: bolder"> 团体名称:</span><Input v-model="teamName" placeholder="请输入团体名称" style="width: 200px" />
-          <Button type="primary" @click="getStatisticData">查询</Button>
-          <Button type="info" @click="exportStatisticData">导出</Button>
+          <Button type="primary" @click="getStatisticData" style="margin-left: 10px">查询</Button>
+          <Button type="info" @click="exportStatisticData" style="margin-left: 20px">导出</Button>
         </Col>
       </Row>
     </div>
@@ -49,7 +49,7 @@
     name:'software',
     data(){
       return {
-        countData:{totalNum:20,monthNum:10,todayNum:50},
+        countData:{totalNum:'',monthNum:'',todayNum:''},
         data:[],
         columns:[
           {
@@ -107,19 +107,13 @@
     methods:{
       initData(){
         let v=this;
-        // let params = new  FormData()
-        // params.append( 'startTime',v.startTime,)
-        // params.append( 'endTime',v.endTime,)
-        // params.append( 'teamName',v.teamName,)
-        // params.append( 'page',v.page,)
-        // params.append( 'size',v.size,)
-        v.$http.post('/api/user/statics-info',{params:{
-            startTime:v.startTime,
-            endTime:v.endTime,
-            teamName:v.teamName,
-            page:v.pageNumber,
-            size:v.pageSize,
-          }}).then((res)=> {
+        let params=new FormData()
+        params.append('startTime',v.startTime);
+        params.append('endTime',v.endTime);
+        params.append('teamName',v.teamName);
+        params.append('page',v.pageNumber);
+        params.append('size',v.pageSize);
+        v.$http.post('/api/user/statics-info',params).then((res)=> {
             if (res.body.code== '200') {
               v.data=res.body.data.content;
               v.totalCount=res.body.data.totalElements
